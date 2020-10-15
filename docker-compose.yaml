@@ -1,0 +1,45 @@
+version: '3.2'
+services:
+  archiver:
+    env_file: .env
+    environment:
+      - EPICS_CA_ADDR_LIST=localhost:8001
+      - MYSQL_ROOT_PASSWORD=archappl
+      - MYSQL_USER=archappl
+      - MYSQL_PASSWORD=archappl
+      - MYSQL_DATABASE=archappl
+      
+    
+    build:
+      context: ./
+      args: # Environment variables available at build-time
+                - http_proxy
+                - https_proxy
+                - no_proxy
+      dockerfile: docker/archiver/Dockerfile
+    tty: true
+    stdin_open: true
+    restart: always
+    depends_on: 
+      - mysqlarchiverdb
+    network_mode: host
+    ports:
+      - 16670:16670
+      - 17665:17665
+      - 17666:17666
+      - 17667:17667
+      - 17668:17668
+      - 8001:8001
+
+  mysqlarchiverdb:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    network_mode: host
+    environment:
+      MYSQL_ROOT_PASSWORD: archappl
+    volumes:
+      - "mysql-archiver-db:/var/lib/mysql"
+ 
+volumes:
+  mysql-archiver-db:
