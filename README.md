@@ -38,4 +38,5 @@ View the Archiver viewer section of the <a href="https://github.com/wduckitt/Rea
 
 Note: It is not intended to use this repository for production purposes. The containers currently run on network mode host and therefore may clash with another instance of the archiver or mysql.
 
+The archiver client is currently still in development on the archiverViewer branch of <a href="https://github.com/wduckitt/React-Automation-Studio">React-Automation-Studio</a>.
 
