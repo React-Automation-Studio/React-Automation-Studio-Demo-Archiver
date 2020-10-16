@@ -36,6 +36,6 @@ Once up and running the  Archiver appliance management application is available 
 
 View the Archiver viewer section of the <a href="https://github.com/wduckitt/React-Automation-Studio">React-Automation-Studio</a> for information on connecting the pvServer and react client to other archivers.
 
-Note: It is not intended to use this repository for production purposes. The containers currently run on network mode host and therefore may clash another instance of the archiver or mysql.
+Note: It is not intended to use this repository for production purposes. The containers currently run on network mode host and therefore may clash with another instance of the archiver or mysql.
 
 
