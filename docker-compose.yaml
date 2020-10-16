@@ -40,12 +40,12 @@ services:
       MYSQL_ROOT_PASSWORD: archappl
     volumes:
       - "mysql-archiver-db:/var/lib/mysql"
-  adminer:
-    image: adminer
-    restart: always
-    network_mode: host
-    ports:
-      - 8080:8080
+  # adminer:
+  #   image: adminer
+  #   restart: always
+  #   network_mode: host
+  #   ports:
+  #     - 8080:8080
 
 volumes:
   mysql-archiver-db:
