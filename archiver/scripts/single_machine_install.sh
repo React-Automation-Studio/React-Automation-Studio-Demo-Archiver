@@ -217,7 +217,7 @@ echo "Setting MYSQL_CONNECTION_STRING to ${MYSQL_CONNECTION_STRING}"
 # Use a SHOW DATABASES command to see if the connection string is valid
 
 while ! mysqladmin ping -h"127.0.0.1" --silent; do
-	echo "trying to ping mysql host"
+	echo "waiting for  mysql host, trying to ping"
     sleep 1
 done
 echo "ping mysql host successful"
@@ -229,13 +229,13 @@ mysql ${MYSQL_CONNECTION_STRING} -e "SHOW DATABASES" | grep information_schema
 while (( $? ))
 do
 
-	MSG="Attempt ${numtries} too connect with MySQL connection string ${MYSQL_CONNECTION_STRING} ,failed waitng ${seconds}"
+	MSG="Attempt ${numtries} to connect with MySQL connection string ${MYSQL_CONNECTION_STRING} ,failed waiting ${seconds} seconds"
 	echo ${MSG}
 	# zenity --text="${MSG}" --error
 	if (( ( ${numtries} >= ${maxAttempts} )  ))
 	then
 		# We've tried a few times; must be a bug in the script.
-		MSG="Failed to connect too connect with MySQL connection string ${MYSQL_CONNECTION_STRING} ,exiting"
+		MSG="Failed to connect to connect with MySQL connection string ${MYSQL_CONNECTION_STRING} ,exiting"
 		echo ${MSG}
 		exit 1
 	fi
@@ -262,7 +262,9 @@ then
 	echo ${MSG}
 	#zenity --text="${MSG}" --question
 	#if [[ $? == 0 ]] ; then
+		cat ${SCRIPTS_DIR}/archappl_mysql.sql
 		echo "Creating tables in ${MYSQL_CONNECTION_STRING}"
+
 		mysql ${MYSQL_CONNECTION_STRING} < ${SCRIPTS_DIR}/archappl_mysql.sql
 
 		mysql ${MYSQL_CONNECTION_STRING} -e "SHOW TABLES" | grep PVTypeInfo
@@ -394,7 +396,7 @@ cat ${SCRIPTS_DIR}/sampleStartup.sh \
 
 chmod +x ${DEPLOY_DIR}/sampleStartup.sh
 
-MSG="Done with the installation. Please use ${DEPLOY_DIR}/sampleStartup.sh to start and stop the appliance and ${DEPLOY_DIR}/deployRelease.sh to deploy a new release."
+MSG="Done with the installation. ARCHIVER data will be available in in 2 minutes or so..."
 echo ${MSG}
 
 ${DEPLOY_DIR}/sampleStartup.sh start
