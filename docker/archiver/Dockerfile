@@ -6,7 +6,7 @@ RUN apt-get install -y wget  autoconf libtool check patch build-essential librea
 
 WORKDIR /install
 
-RUN wget https://download.java.net/openjdk/jdk12/ri/openjdk-12+32_linux-x64_bin.tar.gz --no-check-certificate 
+RUN wget https://download.java.net/openjdk/jdk12/ri/openjdk-12+32_linux-x64_bin.tar.gz --no-check-certificate
 RUN tar -xvf openjdk-12+32_linux-x64_bin.tar.gz
 ENV PATH /install/jdk-12/bin/:$PATH
 
@@ -20,6 +20,7 @@ RUN wget https://cdn.mysql.com//Downloads/Connector-J/mysql-connector-java-5.1.4
 RUN tar -xvf mysql-connector-java-5.1.49.tar.gz
 ADD ./archiver/scripts/single_machine_install.sh /archiver/install/install_scripts/
 ADD ./archiver/scripts/sampleStartup.sh /archiver/install/install_scripts/
+ADD ./archiver/scripts/archappl_mysql.sql /archiver/install/install_scripts/
 WORKDIR /archiver/install/install_scripts/
 ENV JAVA_HOME /install/jdk-12/
 ENV DEPLOY_DIR /archiver
@@ -28,7 +29,7 @@ ENV MYSQL_CLIENT_JAR /archiver/install/mysql-connector-java-5.1.49/mysql-connect
 ENV FQ_HOSTNAME localhost
 ENV MYSQL_CONNECTION_STRING  --host=127.0.0.1 --user=root --password=archappl --database=archappl
 CMD ./single_machine_install.sh
-#CMD ./quickstart.sh apache-tomcat-9.0.20.tar.gz 
+#CMD ./quickstart.sh apache-tomcat-9.0.20.tar.gz
 
 
 EXPOSE 17665 3306 8001 5064

@@ -8,8 +8,8 @@ services:
       - MYSQL_USER=archappl
       - MYSQL_PASSWORD=archappl
       - MYSQL_DATABASE=archappl
-      
-    
+
+
     build:
       context: ./
       args: # Environment variables available at build-time
@@ -20,7 +20,7 @@ services:
     tty: true
     stdin_open: true
     restart: always
-    depends_on: 
+    depends_on:
       - mysqlarchiverdb
     network_mode: host
     ports:
@@ -40,6 +40,12 @@ services:
       MYSQL_ROOT_PASSWORD: archappl
     volumes:
       - "mysql-archiver-db:/var/lib/mysql"
- 
+  adminer:
+    image: adminer
+    restart: always
+    network_mode: host
+    ports:
+      - 8080:8080
+
 volumes:
   mysql-archiver-db:

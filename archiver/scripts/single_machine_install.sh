@@ -194,7 +194,7 @@ then
 	MSG="After calling deployMultipleTomcats.py to create the tomcats for the components, we did not find the mgmt ui. One reason for this is a mismatch between the appliance identity ${ARCHAPPL_MYIDENTITY} and your appliances file at ${ARCHAPPL_APPLIANCES}. Please make that the appliance information for ${ARCHAPPL_MYIDENTITY} in ${ARCHAPPL_APPLIANCES} is correct."
 	echo ${MSG}
 #	zenity --text="${MSG}" --error
-	exit 1	
+	exit 1
 fi
 
 
@@ -216,13 +216,19 @@ echo "Setting MYSQL_CONNECTION_STRING to ${MYSQL_CONNECTION_STRING}"
 
 # Use a SHOW DATABASES command to see if the connection string is valid
 
+while ! mysqladmin ping -h"127.0.0.1" --silent; do
+	echo "trying to ping mysql host"
+    sleep 1
+done
+echo "ping mysql host successful"
+
 let numtries=1
 let maxAttempts=5
 let seconds=10
-mysql ${MYSQL_CONNECTION_STRING} -e "SHOW DATABASES" | grep information_schema 
+mysql ${MYSQL_CONNECTION_STRING} -e "SHOW DATABASES" | grep information_schema
 while (( $? ))
 do
-	
+
 	MSG="Attempt ${numtries} too connect with MySQL connection string ${MYSQL_CONNECTION_STRING} ,failed waitng ${seconds}"
 	echo ${MSG}
 	# zenity --text="${MSG}" --error
@@ -233,7 +239,7 @@ do
 		echo ${MSG}
 		exit 1
 	fi
-	
+
 	# MSG="Please enter a MySQL Connection string like so"
 	# DEFAULT_MYSQL_CONNECTION_STRING = ${MYSQL_CONNECTION_STRING}
 	# echo $MSG
@@ -258,7 +264,7 @@ then
 	#if [[ $? == 0 ]] ; then
 		echo "Creating tables in ${MYSQL_CONNECTION_STRING}"
 		mysql ${MYSQL_CONNECTION_STRING} < ${SCRIPTS_DIR}/archappl_mysql.sql
-		
+
 		mysql ${MYSQL_CONNECTION_STRING} -e "SHOW TABLES" | grep PVTypeInfo
 		if (( ( $? != 0 ) ))
 		then
@@ -270,10 +276,10 @@ then
 	#else
 	#	echo "Skipping creating MySQL tables."
 	#fi
-else 
+else
 	MSG="The EPICS archiver appliance tables already exist in the schema accessed by using ${MYSQL_CONNECTION_STRING}"
 	echo ${MSG}
-#	zenity --text="${MSG}" --info	
+#	zenity --text="${MSG}" --info
 fi
 
 
@@ -316,9 +322,9 @@ then
 fi
 
 echo "Deploying a new release from \${WARSRC_DIR} onto \${DEPLOY_DIR}"
-pushd \${DEPLOY_DIR}/mgmt/webapps && rm -rf mgmt*; cp \${WARSRC_DIR}/mgmt.war .; mkdir mgmt; cd mgmt; jar xf ../mgmt.war; popd; 
-pushd \${DEPLOY_DIR}/engine/webapps && rm -rf engine*; cp \${WARSRC_DIR}/engine.war .; mkdir engine; cd engine; jar xf ../engine.war; popd; 
-pushd \${DEPLOY_DIR}/etl/webapps && rm -rf etl*; cp \${WARSRC_DIR}/etl.war .; mkdir etl; cd etl; jar xf ../etl.war; popd; 
+pushd \${DEPLOY_DIR}/mgmt/webapps && rm -rf mgmt*; cp \${WARSRC_DIR}/mgmt.war .; mkdir mgmt; cd mgmt; jar xf ../mgmt.war; popd;
+pushd \${DEPLOY_DIR}/engine/webapps && rm -rf engine*; cp \${WARSRC_DIR}/engine.war .; mkdir engine; cd engine; jar xf ../engine.war; popd;
+pushd \${DEPLOY_DIR}/etl/webapps && rm -rf etl*; cp \${WARSRC_DIR}/etl.war .; mkdir etl; cd etl; jar xf ../etl.war; popd;
 pushd \${DEPLOY_DIR}/retrieval/webapps && rm -rf retrieval*; cp \${WARSRC_DIR}/retrieval.war .; mkdir retrieval; cd retrieval; jar xf ../retrieval.war; popd;
 echo "Done deploying a new release from \${WARSRC_DIR} onto \${DEPLOY_DIR}"
 
@@ -350,7 +356,7 @@ then
 	MSG="After deploying the release, cannot find a required file. The deployment did not succeed."
 	echo ${MSG}
 	zenity --text="${MSG}" --error
-	exit 1	
+	exit 1
 fi
 
 cat ${SCRIPTS_DIR}/sampleStartup.sh \
@@ -360,7 +366,7 @@ cat ${SCRIPTS_DIR}/sampleStartup.sh \
 	| sed -e "s;export ARCHAPPL_APPLIANCES=/nfs/archiver/appliances.xml;export ARCHAPPL_APPLIANCES=${ARCHAPPL_APPLIANCES};g" \
 	| sed -e "s;export ARCHAPPL_MYIDENTITY=\"appliance0\";export ARCHAPPL_MYIDENTITY=\"${ARCHAPPL_MYIDENTITY}\";g" \
 	> ${DEPLOY_DIR}/sampleStartup.sh
-	
+
 # MSG="Do you have a site specific policies.py file?"
 # echo ${MSG}
 # zenity --text="${MSG}" --question
@@ -382,18 +388,18 @@ cat ${SCRIPTS_DIR}/sampleStartup.sh \
 # 	cat ${DEPLOY_DIR}/sampleStartup.sh \
 # 	| sed -e "s;# export ARCHAPPL_POLICIES=/nfs/epics/archiver/production_policies.py;export ARCHAPPL_POLICIES=${SITE_SPECIFIC_POLICIES_FILE};g" \
 # 	> ${DEPLOY_DIR}/sampleStartup.sh.withpolicies
-	
+
 # 	mv -f ${DEPLOY_DIR}/sampleStartup.sh.withpolicies ${DEPLOY_DIR}/sampleStartup.sh
 # fi
-	
+
 chmod +x ${DEPLOY_DIR}/sampleStartup.sh
 
-MSG="Done with the installation. Please use ${DEPLOY_DIR}/sampleStartup.sh to start and stop the appliance and ${DEPLOY_DIR}/deployRelease.sh to deploy a new release." 
+MSG="Done with the installation. Please use ${DEPLOY_DIR}/sampleStartup.sh to start and stop the appliance and ${DEPLOY_DIR}/deployRelease.sh to deploy a new release."
 echo ${MSG}
 
 ${DEPLOY_DIR}/sampleStartup.sh start
 while true; do sleep 1000; done
-#zenity --text="${MSG}" --info	
+#zenity --text="${MSG}" --info
 
 
 
