@@ -23,13 +23,13 @@ services:
     depends_on:
       - mysqlarchiverdb
     network_mode: host
-    ports:
-      - 16670:16670
-      - 17665:17665
-      - 17666:17666
-      - 17667:17667
-      - 17668:17668
-      - 8001:8001
+    # ports:
+      # - 16670:16670
+      # - 17665:17665
+      # - 17666:17666
+      # - 17667:17667
+      # - 17668:17668
+      # - 8001:8001
 
   mysqlarchiverdb:
     image: mysql
